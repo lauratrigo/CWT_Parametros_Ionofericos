@@ -82,3 +82,44 @@ Este projeto facilita a análise espectral temporal de dados ionosféricos e sol
 ## 📜 Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para mais detalhes.
+
+<div align="center">
+  <h4><strong>Figura 1: AE-index (nT)</strong></h4>
+  <img src="images/image_ae.png" alt="Gráfico AE-index" style="width:80%; max-width:900px;">
+</div>
+
+<br>
+
+<div align="center">
+  <h4><strong>Figura 2: Componente Bz do Campo Magnético (nT, GSM)</strong></h4>
+  <img src="images/image_bz.png" alt="Gráfico Bz" style="width:80%; max-width:900px;">
+</div>
+
+<br>
+
+<div align="center">
+  <h4><strong>Figura 3: Campo Elétrico Ey (mV/m)</strong></h4>
+  <img src="images/image_ey.png" alt="Gráfico Ey" style="width:80%; max-width:900px;">
+</div>
+
+<br>
+
+<div align="center">
+  <h4><strong>Figura 4: Velocidade do Vento Solar (km/s)</strong></h4>
+  <img src="images/image_flow_speed.png" alt="Gráfico Flow Speed" style="width:80%; max-width:900px;">
+</div>
+
+<br>
+
+<div align="center">
+  <h4><strong>Figura 5: Densidade de Prótons (n/cc)</strong></h4>
+  <img src="images/image_proton_density.png" alt="Gráfico Proton Density" style="width:80%; max-width:900px;">
+</div>
+
+<br>
+
+<div align="center">
+  <h4><strong>Figura 6: Índice SYM-H (nT)</strong></h4>
+  <img src="images/image_symh.png" alt="Gráfico SYM-H" style="width:80%; max-width:900px;">
+</div>
+

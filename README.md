@@ -7,7 +7,7 @@ Este projeto é um script MATLAB que realiza a análise por Transformada Contín
 - **MATLAB**
 - Arquivo de dados tabulado `dados_Omni_Tratado.txt` (com dados OMNI pré-tratados)
 
-![MATLAB Badge](https://img.shields.io/badge/MATLAB-FF2C0A?logo=matlab&logoColor=white)
+![MATLAB Badge](https://img.shields.io/badge/MATLAB-R2019b-red)
 
 ## 💡 Objetivo
 
@@ -50,8 +50,9 @@ Abra o MATLAB, navegue até a pasta do projeto e execute o script:
 
 ```matlab
 run cwt_parametros_ionosfericos.m
-O script irá gerar gráficos interativos com a análise CWT para cada variável física.
 ```
+
+O script irá gerar gráficos interativos com a análise CWT para cada variável física.
 
 ## 🔧 Detalhes Técnicos
 

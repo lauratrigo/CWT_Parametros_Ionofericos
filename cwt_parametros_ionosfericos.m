@@ -4,8 +4,8 @@
 clc; clear; close all;
 
 % --- 1) Ler o arquivo tratado do OMNI (DD MM YYYY HH:MM Ey Bz V N SYM_H ...)
-opts = detectImportOptions('dados_Omni_Tratado.txt', 'Delimiter', '\t');
-T = readtable('dados_Omni_Tratado.txt', opts);
+opts = detectImportOptions('dados_Omni_Tratados.txt', 'Delimiter', '\t');
+T = readtable('dados_Omni_Tratados.txt', opts);
 
 % --- 2) Mostrar as colunas lidas
 disp('Colunas lidas do arquivo OMNI:');
@@ -17,12 +17,12 @@ datetime_str = compose('%02d-%02d-%04d %s', ...
 time_datetime = datetime(datetime_str, 'InputFormat', 'dd-MM-yyyy HH:mm');
 xnum = datenum(time_datetime);
 
-% --- 4) Identificar colunas fÌsicas do OMNI
-% A partir da 5™ coluna em diante
+% --- 4) Identificar colunas f√≠sicas do OMNI
+% A partir da 5¬™ coluna em diante
 colunas = 5:width(T);
 nomesVarsTabela = T.Properties.VariableNames(colunas);
 
-% Nomes fÌsicos conforme NASA/OMNIWeb
+% Nomes f√≠sicos conforme NASA/OMNIWeb
 nomesFisicos = { ...
     'Bz, GSM (nT)', ...
     'Flow Speed (km/s)', ...
@@ -31,23 +31,31 @@ nomesFisicos = { ...
     'AE (nT)', ...   
     'SYM/H (nT)'};
 
-% --- 5) Loop para gerar um gr·fico por vari·vel
+        % --- Salvar automaticamente a figura ---
+nomesArquivos = { ...
+    'image_bz.png', ...
+    'image_flow_speed.png', ...
+    'image_proton_density.png', ...
+    'image_ey.png', ...
+    'image_ae.png', ...
+    'image_symh.png' };
+% --- 5) Loop para gerar um gr√°fico por vari√°vel
 for k = 1:length(colunas)
     sig2 = T{:,colunas(k)};
     nomeColuna = nomesVarsTabela{k};
     nomeFisico = nomesFisicos{k};
 
-    % --- PrÈ-processamento
+    % --- Pr√©-processamento
     mask_nan = isnan(sig2(:))';
     sig2(isnan(sig2)) = 0;
     sig2 = sig2(:);
     n = numel(sig2);
 
-    % --- Extens„o simÈtrica
+    % --- Extens√£o sim√©trica
     left2 = flipud(sig2);
     sig2_ext = [left2; left2; sig2; left2; left2];
 
-    % --- ConfiguraÁ„o da CWT
+    % --- Configura√ß√£o da CWT
     fs = 1/300;  % 5 minutos
     sig2_ext(isnan(sig2_ext)) = 0;
     
@@ -66,46 +74,63 @@ for k = 1:length(colunas)
     W = abs(wt_central).^2;
     W(:, mask_nan) = NaN;
 
-    % --- Gr·fico
+    % --- Gr√°fico
     figure('Name',['CWT - OMNI ' nomeColuna]);
     h = pcolor(xnum, log2(period), W ./ max(W(:)));
     set(h, 'EdgeColor', 'none');
     set(gca, 'Color', 'w');
     set(h, 'AlphaData', ~isnan(W));
     set(h, 'FaceAlpha', 'flat');
-    colormap jet;
-    colorbar;
+colormap jet;
+c = colorbar;                  % salva o handle corretamente
+c.Limits = [0 1];
+c.Ticks = 0.1:0.1:0.9;
+c.TickLabels = string(c.Ticks);
+c.Label.FontSize = 16;
+c.Label.FontName = 'Arial';
 
-    % --- Eixos e rÛtulos
+
+    % --- Eixos e r√≥tulos
    
     ax = gca;
 
-    % Define o intervalo de tempo (eixo X) com resoluÁ„o di·ria
+    % Define o intervalo de tempo (eixo X) com resolu√ß√£o di√°ria
     startDate = dateshift(min(time_datetime), 'start', 'day');
     endDate = dateshift(max(time_datetime), 'start', 'day');
-    xticks = startDate:days(1):endDate;
+    xticks = startDate:days(2):endDate;
 
-    % Aplica os ticks di·rios ao eixo X
+    % Aplica os ticks di√°rios ao eixo X
     ax.XTick = datenum(xticks);
-    ax.XTickLabel = datestr(xticks, 'dd-mmm');  % Exemplo: 01-Aug, 02-Aug...
-    ax.XTickLabelRotation = 45;  % Para melhor leitura (opcional)
+    ax.XTickLabel = datestr(xticks, 'dd');  % Exemplo: 01-Aug, 02-Aug...
+    ax.XTickLabelRotation = 90;  % Para melhor leitura (opcional)
     ax.XLim = [min(xnum), max(xnum)];  % Garante que o eixo X respeite os limites dos dados
 
 
     % Define valores desejados para o eixo Y (em dias)
-desired_periods = [0.25 0.5 1 2 4 8 16 31];  % adicione ou remova conforme necess·rio
+desired_periods = [0.25 0.5 1 2 4 8 16 31];  % adicione ou remova conforme necess√°rio
 ax.YTick = log2(desired_periods);
 ax.YTickLabel = string(desired_periods);
 
-    xlabel('Time');
-    ylabel('Period (days)');
-    title(['CWT - ' nomeFisico]);
+ax.FontName = 'Arial';
+ax.FontSize = 16;           % tamanho dos n√∫meros nos eixos
 
-    % --- Cone de influÍncia
+% Fonte dos labels dos eixos
+xlabel('Time (days)', 'FontSize', 16, 'FontName', 'Arial', 'FontWeight', 'bold');
+ylabel('Period (days)', 'FontSize', 16, 'FontName', 'Arial','FontWeight', 'bold');
+
+% Fonte do t√≠tulo
+title(['CWT - ' nomeFisico], 'FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+
+
+    % --- Cone de influ√™ncia
     hold on;
     %plot(xnum, log2(coi_central), 'k--', 'LineWidth', 1.5);
     hold off;
 
     %legend('Cone of Influence', 'Location', 'southwest');
     %return
+    
+nomeArquivo = nomesArquivos{k};
+print(gcf, nomeArquivo, '-dpng', '-r300');
+
 end
